@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Override;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-#[Fillable(['name', 'email', 'password','role_id','is_active'])]
+#[Fillable(['name', 'email', 'password','role_id','is_active','address','phone','date_of_birth','image_url'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements JWTSubject
 {
@@ -48,6 +48,10 @@ class User extends Authenticatable implements JWTSubject
                     $allowedRoles
                 );
 
+    }
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
     }
     #[Override]
     public function getJWTIdentifier()

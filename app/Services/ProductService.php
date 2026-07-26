@@ -7,7 +7,6 @@ use App\Models\Product;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-use function PHPUnit\Framework\isNull;
 
 class ProductService{
 
@@ -33,9 +32,11 @@ class ProductService{
         return Product::query()
                 ->with(['category','inventory'])
                 ->when($search,fn ($query)=>
-                                $query->where('name','like',"%{$search}%"
+                                $query->where('name','ilike',"%{$search}%"
                                 )
+                                ->orWhere('barcode','ilike',"%{$search}%",)
                         )
+    
                 ->when(!is_null($active),fn ($query)=>
                             $query->where('is_active',$active)
                     )
@@ -49,14 +50,22 @@ class ProductService{
     // }
     public function create(array $data){
         return DB::transaction(function () use($data) {
+        
+        
 
         $product= Product::create($data);
         Inventory::create([
             "product_id"=>$product->id,
-            "quatity"=>0
+            "quantity"=>0
         ]);
             return $product;
         });
+    }
+    public function uploadProductImage(array $data){
+        if(isset($data['image'])){
+            $data['image'] = $data['image']->store('products','public');
+        }
+        return $data['image'];
     }
 
     public function update(Product $product, array $data): Product{
@@ -64,6 +73,10 @@ class ProductService{
             $product->update($data);
             return $product->load(['category','inventory']);
         });
+    }
+
+    public function delete(Product $product){
+        $product->delete();
     }
 
 }

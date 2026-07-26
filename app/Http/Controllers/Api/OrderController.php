@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderFilterRequest;
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Services\OrderService;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -29,7 +29,7 @@ class OrderController extends Controller
         return $this->orderService->create($request->validated());
     }
     public function show(Order $order){
-        return new OrderResource(
+        return new OrderDetailResource(
             $this->orderService->getDetails($order)
         );
     }

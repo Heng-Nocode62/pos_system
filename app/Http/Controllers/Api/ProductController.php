@@ -38,4 +38,22 @@ class ProductController extends Controller
         $product = $this->productService->update($product,$request->validated());
         return new ProductResource($product);
     }
+
+    // TODO check logic later
+    public function destroy(Product $product){
+
+    $this->productService->delete($product);
+    }
+
+    public function storeImage(Request $request){
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:5012'
+        ]);
+        $imagePath = $request->file('image')->store('products', 'public');
+        return response()->json(
+            [
+                "image_url"=>$imagePath
+            ],201
+        );
+    }
 }

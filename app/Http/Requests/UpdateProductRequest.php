@@ -59,6 +59,10 @@ class UpdateProductRequest extends FormRequest
             'is_active'=>[
                 'sometimes',
                 'boolean'
+            ],
+            'image_url'=>[
+                'sometimes',
+                'string'
             ]
         ];
     }

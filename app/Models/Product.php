@@ -20,7 +20,8 @@ class Product extends Model
             'cost_price',
             'barcode',
             'is_active',
-            'category_id'
+            'category_id',
+            'image_url'
    ];
 
    
@@ -30,6 +31,10 @@ class Product extends Model
    public function inventory(){
     return $this->hasOne(Inventory::class);
    }
+   public function purchaseItems()
+    {
+        return $this->hasMany(PurchaseItem::class);
+    }
    
     
 }

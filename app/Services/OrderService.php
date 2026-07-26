@@ -99,7 +99,7 @@ class OrderService{
                     }
                     )
                 ->orderBy($filters['sort_by'] ?? 'created_at',
-                    $filters['sord_direction'] ?? 'desc')
+                    $filters['sort_direction'] ?? 'desc')
                 ->paginate($filters['per_page'] ?? 10);
 
         

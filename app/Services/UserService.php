@@ -11,6 +11,10 @@ class UserService{
             'email'=>$data['email'],
             'role_id'=>$data['role_id'],
             'password'=> Hash::make($data['password']),
+            'image_url'=>$data['image_url'],
+            'phone'=>$data['phone'],
+            'date_of_birth'=>$data['date_of_birth'],
+            'address'=>$data['address'],
             'is_active'=>true
         ]);
         return $user;
@@ -36,6 +40,7 @@ class UserService{
         $user->update([
             'is_active'=>false
         ]);
+        $user->delete();
         return $user->load('role');
     }
 

@@ -44,8 +44,6 @@ class UserController extends Controller
 
     public function destroy(User $user){
         $user = $this->userService->delete($user);
-
-        return new UserResource($user);
     }
     public function changePassword(Request $request, User $user){
         $request->validate([

@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventories', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->unique()->constrained();
-            $table->unsignedInteger('quantity')->default(0);
-            $table->timestamps();
+        Schema::table('categories', function (Blueprint $table) {
+            //
+            $table->softDeletes();
         });
     }
 
@@ -24,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventories');
+        Schema::table('categories', function (Blueprint $table) {
+            //
+        });
     }
 };

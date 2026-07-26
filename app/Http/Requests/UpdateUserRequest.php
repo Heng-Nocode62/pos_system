@@ -28,12 +28,20 @@ class UpdateUserRequest extends FormRequest
             'email'=>[
                 'sometimes',
                 'email',
-                Rule::unique('users')->ignore($this->route('id'))
+                Rule::unique('users')->ignore($this->route('user'))
             ],
             'role_id'=>[
                 'sometimes',
                 'exists:roles,id'
             ],
+            'image_url'=>['sometimes','string'],
+            'phone'=>[
+                'sometimes',
+                'string',
+                Rule::unique('users')->ignore($this->route('user'))
+            ],
+            'date_of_birth'=>['sometimes','date'],
+            'address'=>['sometimes'=>'string']
         ];
     }
 }

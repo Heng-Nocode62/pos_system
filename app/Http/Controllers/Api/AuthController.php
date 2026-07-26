@@ -11,28 +11,21 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request){
-        $credentials = $request->validated();
-        $user = User::where('email',$credentials['email'])->first();
+    public function login(LoginRequest $request)
+{
+    $credentials = $request->validated();
 
-        if(!$user ||
-          !Hash::check($credentials['password'],$user->password)){
-            return response()->json([
-                'message'=>'Invalid Credentials'
-            ], 401);
-          }
-        if(!$token= auth('api')->attempt($credentials)){
-           return response()->json([
-            'message'=>'Invalid credentials'
-           ],401); 
-        }
-
+    if (!$token = auth('api')->attempt($credentials)) {
         return response()->json([
-            'token'=>$token,
-            'user'=> new UserResource($user)
-        ]);
-
+            'message' => 'Invalid credentials'
+        ], 401);
     }
+
+    return response()->json([
+        'token' => $token,
+        'user' => new UserResource(auth('api')->user())
+    ]);
+}
 
     public function logout(Request $request){
         $request->user()->currentAccessToken()->delete();
