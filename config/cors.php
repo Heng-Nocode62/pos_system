@@ -6,7 +6,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'https://pos-frontend-5w253vlja-hengs-projects-2357ae37.vercel.app', // Your deployed frontend
+        'https://pos-frontend-cp0basz4g-hengs-projects-2357ae37.vercel.app/', // Your deployed frontend
         'http://localhost:5173',               // Local development
     ],
 
