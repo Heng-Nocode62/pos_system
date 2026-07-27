@@ -9,15 +9,18 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
+use App\Services\SupabaseStorageService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     protected ProductService $productService;
+    protected SupabaseStorageService $storage;
 
-    public function __construct(ProductService $productService)
+    public function __construct(ProductService $productService,SupabaseStorageService $storage)
     {
         $this->productService=$productService;
+        $this ->storage = $storage;
     }
     
     public function index(ProductIndexRequest $request){
@@ -45,15 +48,14 @@ class ProductController extends Controller
     $this->productService->delete($product);
     }
 
-    public function storeImage(Request $request){
-        $request->validate([
+    public function storeImage(Request $request)
+        {
+            $request->validate([
             'image' => 'required|image|mimes:jpg,jpeg,png|max:5012'
         ]);
-        $imagePath = $request->file('image')->store('products', 'public');
-        return response()->json(
-            [
-                "image_url"=>$imagePath
-            ],201
-        );
-    }
+        $url = $this->storage->upload($request->file('image'));
+    return response()->json([
+        'image_url'=>$url
+    ],201);
+}
 }
