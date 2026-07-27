@@ -84,3 +84,11 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get("/categories",[CategoryController::class, "index"]);
 Route::post("/products/store",[ProductController::class, "storeImage"]);
 
+use Illuminate\Support\Facades\Config;
+
+Route::get('/cors-test', function () {
+    return response()->json([
+        'cors' => Config::get('cors'),
+    ]);
+});
+
