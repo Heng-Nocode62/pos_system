@@ -1,38 +1,26 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cross-Origin Resource Sharing (CORS) Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure your settings for cross-origin resource sharing
-    | or "CORS". This determines what cross-origin operations may execute
-    | in web browsers. You are free to adjust these settings as needed.
-    |
-    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-    |
-    */
-
-    'paths' => ['api/*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://localhost:5173',
-        'https://your-frontend.onrender.com',
-        'https://your-app.vercel.app',
+        'https://your-frontend.onrender.com', // Your deployed frontend
+        'http://localhost:5173',               // Local development
     ],
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    // Make sure 'Authorization' is permitted in headers
+    'allowed_headers' => ['*'], 
 
-    'exposed_headers' => [],
+    // Explicitly expose Authorization if your API returns updated tokens in headers
+    'exposed_headers' => ['Authorization'],
 
-    'max_age' => 0,
+    'max_age' => 86400, // Cache preflight response for 24 hours to speed up requests
 
-    'supports_credentials' => false,
-
+    // Set to true ONLY if storing JWT in HTTP-Only cookies. 
+    // Set to false if sending Bearer token via Authorization header.
+    'supports_credentials' => false, 
 ];

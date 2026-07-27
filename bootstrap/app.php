@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -16,17 +17,19 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withMiddleware(function (Middleware $middleware) {
+        // Ensure Cors runs globally
+        $middleware->append(HandleCors::class);
+        
+        // Trust Render's HTTPS reverse proxy so OPTIONS requests aren't redirected
+        $middleware->trustProxies(at: '*');
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         //
         $middleware->alias([
             'role'=> RoleMiddleware::class
         ]);
     })
-    ->withMiddleware(function (Middleware $middleware) {
-    $middleware->api(prepend: [
-        \Illuminate\Http\Middleware\HandleCors::class,
-    ]);
-})
     ->withExceptions(function (Exceptions $exceptions): void {
 
         $exceptions->render(function (
