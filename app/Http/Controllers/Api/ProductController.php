@@ -11,6 +11,8 @@ use App\Models\Product;
 use App\Services\ProductService;
 use App\Services\SupabaseStorageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ProductController extends Controller
 {
@@ -24,11 +26,29 @@ class ProductController extends Controller
     }
     
     public function index(ProductIndexRequest $request){
-        $validatedRequest = $request->validated();
+    //     $validatedRequest = $request->validated();
+    
+    //    $product= $this->productService->getAll($request->validated());
+
+    //     return ProductResource::collection($product);
+    $validatedRequest = $request->validated();
+    Log::info("validated Passed");
+
+    try {
+        
     
        $product= $this->productService->getAll($request->validated());
 
         return ProductResource::collection($product);
+    }catch(\Throwable $e){
+        Log::error($e->getMessage());
+        Log::error($e->getTraceAsString());
+
+        return response()->json([
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+        
     }
 
     public function store(StoreProductRequest $request){
