@@ -22,77 +22,104 @@ use App\Models\Supplier;
     }
 
 
-     public function stats(): array
+     public function getStats(): array
     {
-        $today = now()->toDateString();
+        $today = today();
 
         return [
 
-            // Sales today
-            'total_sales_today' => (string) Order::whereDate('created_at', $today)
-                ->where('status', 'COMPLETED')
-                ->sum('total_amount'),
+            'total_sales_today' => (string) Order::whereDate(
+                'created_at',
+                $today
+            )->where('status', 'COMPLETED')
+             ->sum('total_amount'),
 
-            // Orders today
-            'total_orders_today' => Order::whereDate('created_at', $today)
-                ->where('status', 'COMPLETED')
-                ->count(),
+            'total_orders_today' => Order::whereDate(
+                'created_at',
+                $today
+            )->where('status', 'COMPLETED')
+             ->count(),
 
-            // Products
             'total_products' => Product::count(),
 
-            // Low stock count (<= 10)
-            'low_stock_count' => Inventory::where('quantity', '<=', 10)->count(),
+            'low_stock_count' => Inventory::where(
+                'quantity',
+                '<=',
+                10
+            )->count(),
 
-            // Customers (you don't have customers table yet)
+            // You don't have customers yet, so return 0 for now
             'total_customers' => 0,
 
-            // Suppliers
             'total_suppliers' => Supplier::count(),
 
-            // Last 7 days sales trend
-            'sales_trend' => Order::selectRaw('DATE(created_at) as date, SUM(total_amount) as total')
-                ->where('status', 'COMPLETED')
-                ->whereDate('created_at', '>=', now()->subDays(6))
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get()
-                ->map(fn ($row) => [
-                    'date' => $row->date,
-                    'total' => (string) $row->total,
-                ])
-                ->values(),
+            'sales_trend' => $this->getSalesTrend(),
 
-            // Recent orders
-            'recent_orders' => Order::latest()
-                ->take(5)
-                ->get(['id', 'order_number', 'total_amount', 'created_at'])
-                ->map(fn ($order) => [
-                    'id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'total_amount' => (string) $order->total_amount,
-                    'created_at' => $order->created_at,
-                ])
-                ->values(),
+            'recent_orders' => $this->getRecentOrders(),
 
-            // Low stock products
-            'low_stock_products' => Product::query()
-                ->join('inventories', 'products.id', '=', 'inventories.product_id')
-                ->where('inventories.quantity', '<=', 10)
-                ->orderBy('inventories.quantity')
-                ->take(5)
-                ->get([
-                    'products.id',
-                    'products.name',
-                    'inventories.quantity',
-                ])
-                ->map(fn ($product) => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'quantity' => $product->quantity,
-                ])
-                ->values(),
+            'low_stock_products' => $this->getLowStockProducts(),
 
         ];
+    }
+
+    private function getSalesTrend(): array
+    {
+        return Order::query()
+            ->selectRaw('DATE(created_at) as date')
+            ->selectRaw('SUM(total_amount) as total')
+            ->where('status', 'COMPLETED')
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->map(fn ($row) => [
+                'date' => $row->date,
+                'total' => (string) $row->total,
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function getRecentOrders(): array
+    {
+        return Order::query()
+            ->select([
+                'id',
+                'order_number',
+                'total_amount',
+                'created_at',
+            ])
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(fn ($order) => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'total_amount' => (string) $order->total_amount,
+                'created_at' => $order->created_at->toISOString(),
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function getLowStockProducts(): array
+    {
+        return Product::query()
+            ->join('inventories', 'products.id', '=', 'inventories.product_id')
+            ->where('inventories.quantity', '<=', 10)
+            ->orderBy('inventories.quantity')
+            ->limit(5)
+            ->get([
+                'products.id',
+                'products.name',
+                'inventories.quantity',
+            ])
+            ->map(fn ($product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'quantity' => (int) $product->quantity,
+            ])
+            ->values()
+            ->all();
     }
 }

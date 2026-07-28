@@ -17,14 +17,7 @@ class DashboardController extends Controller
 
     public function index(){
         // $data = $this->dashboardService->dashboard();
-        try{
-            $data = $this->dashboardService->stats();
+        $data = $this->dashboardService->getStats();
         return response()->json($data);
-        }catch(\Throwable $e){
-            return response()->json([
-                "message"=>$e->getMessage()
-            ]);
-        }
-        
     }
 }
