@@ -22,6 +22,8 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('profile', [AuthController::class, 'profile']);
         Route::post('logout', [AuthController::class, 'logout']);
+        Route::put('update',[AuthController::class,'updateProfile']);
+        Route::patch('changePassword',[AuthController::class,'changePassword']);
         // Route::post('refresh', [AuthController::class, 'refresh']);
     });
 });

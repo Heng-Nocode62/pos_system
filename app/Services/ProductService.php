@@ -18,6 +18,7 @@ class ProductService{
         $sort = $filters['sort'] ?? 'id';
         $direction = $filters['direction']?? 'asc';
         $perPage = $filters['per_page'] ?? 10;
+        $category_id = $filters['category_id'] ?? null;
     
         $allowedSorts = [
             'id',
@@ -31,6 +32,8 @@ class ProductService{
 
         return Product::query()
                 ->with(['category','inventory'])
+                ->when($category_id, fn ($query)=>
+                                    $query->where('category_id',$category_id))
                 ->when($search,fn ($query)=>
                                 $query->where('name','ilike',"%{$search}%"
                                 )

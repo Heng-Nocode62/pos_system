@@ -26,7 +26,11 @@ class ProductIndexRequest extends FormRequest
         return [
         'search' => ['nullable', 'string'],
         'active' => ['nullable', 'boolean'],
-        'sort' => [
+        'category_id'=>[
+                    'nullable',
+                    'integer',
+                    Rule::exists('categories','id')],
+        'sort' =>[
             'nullable',
             Rule::in([
                 'id',
