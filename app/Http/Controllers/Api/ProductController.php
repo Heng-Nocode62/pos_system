@@ -50,6 +50,9 @@ class ProductController extends Controller
     }
         
     }
+    public function show(Product $product){
+        return new ProductResource($product);
+    }
 
     public function store(StoreProductRequest $request){
 
