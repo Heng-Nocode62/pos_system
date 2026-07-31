@@ -28,7 +28,7 @@ class UpdateUserRequest extends FormRequest
             'email'=>[
                 'sometimes',
                 'email',
-                Rule::unique('users')->ignore($this->route('user'))
+                Rule::unique('users')->ignore($this->user()->id)
             ],
             'role_id'=>[
                 'sometimes',
