@@ -6,14 +6,14 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateUserRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,13 +23,12 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = $this->route('user');
         return [
             'name'=>['sometimes','string'],
             'email'=>[
                 'sometimes',
                 'email',
-                Rule::unique('users')->ignore($user->id)
+                Rule::unique('users')->ignore($this->user()->id)
             ],
             'role_id'=>[
                 'sometimes',

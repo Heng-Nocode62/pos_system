@@ -62,6 +62,7 @@ Route::middleware(['auth:api','role:ADMIN|MANAGER'])->group(function (){
 
     //::::::::::::::::::::::::::: supplier
     Route::apiResource('suppliers', SupplierController::class);
+    // Route::delete('/suppliers/{supplier}',[SupplierController::class,'delete']);
 
     //:::::::::::::::::::::::::::: purchase
     Route::get('/purchases', [PurchaseController::class, 'index']);

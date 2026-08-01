@@ -25,8 +25,8 @@ class ProductResource extends JsonResource
             'is_active'=>$this->is_active,
             'image_url'=>$this->image_url,
             'category'=>[
-                'id'=>$this->category->id,
-                'name'=>$this->category->name
+                'id'=>$this->category?->id,
+                'name'=>$this->category?->name
             ],
             'inventory'=>[
                 'quantity'=>$this->inventory?->quantity

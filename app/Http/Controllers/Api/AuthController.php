@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -54,7 +54,7 @@ class AuthController extends Controller
         return new UserResource($user);
     }
 
-    public function updateProfile(UpdateUserRequest $request){
+    public function updateProfile(UpdateProfileRequest $request){
         $user = $request->user();
         $user->update($request->validated());
         $user->refresh();
